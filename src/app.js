@@ -10,6 +10,9 @@ import {
 
 import './app.styl'
 
+const WIDTH = window.innerWidth
+const HEIGHT = window.innerHeight
+
 class App extends Component{
 
 	static defaultProps = {
@@ -52,7 +55,25 @@ class App extends Component{
 			positionX: 0
 		}
 
-		this.donutImage = require('assets/images/donut.png')
+		this.donutImage = new Image()
+		this.donutImage.src = require('assets/images/donut.png')
+
+		//
+
+		this.donut = {
+			x: WIDTH / 2,
+			y: HEIGHT / 2,
+			positionX: 0
+		}
+		this.donutArray = []
+		for (let i = 0; i < 10; i++) {
+			let donut = {
+				x: 0,
+				y: 0,
+				positionX: Math.random(-5, 5)
+			}
+			this.donutArray.push(donut)
+		}
 
 	}
 
@@ -72,16 +93,54 @@ class App extends Component{
 
 		this.canvasContext = this.canvas.getContext('2d')
 
-		this.interval = setInterval(this.onInterval, 1000 / 25)
+		// this.interval = setInterval(this.onInterval, 1000 / 10)
+
+		requestAnimationFrame(this.draw)
 
 	}
 
-	onInterval = () => {
-		this.setState({
-			positionX: this.state.positionX + 1
-		})
-		console.log(this.state)
+	draw = () => {
+		console.log("draw")
+		this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height)
+		this.moveDonut()
+		this.drawDonut()
+
+		// this.canvasContext.drawImage(this.donutImage, 0, 0, 50, 50)
+		requestAnimationFrame(this.draw)
 	}
+
+	moveDonut = () => {
+		for (let i = 0; i < this.donutArray.length; i++) {
+			let d = this.donutArray[i]
+			d.positionX += Math.random(1, 5)
+		}
+
+
+		// this.donut.positionX += 1
+
+		// if (this.donut.positionX > WIDTH) {
+		// 	this.donut.positionX = -50
+		// }
+	}
+
+	drawDonut() {
+		for (let i = 0; i < this.donutArray.length; i++) {
+			let d = this.donutArray[i]
+			this.canvasContext.drawImage(this.donutImage, d.positionX, 0, 50, 50)	
+		}
+	}
+
+	// onInterval = () => {
+	// 	this.setState({
+	// 		positionX: this.state.positionX + 1
+	// 	})
+	// 	console.log(this.state)
+
+		// this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height)
+		// let img = new Image()
+		// img.src = require('assets/images/donut.png')
+	// 	this.canvasContext.drawImage(img, this.state.positionX, 0, 50, 50)
+	// }
 
 
 	onClick = (e) => {
@@ -91,12 +150,12 @@ class App extends Component{
 	render() {
 		return (
 			<main onClick={this.onClick}>
-				<canvas id="granim-canvas"></canvas>
-				<canvas ref={el => this.canvas = el}></canvas>
-				<MovingImage image={this.donutImage} positionX={this.state.positionX}/>
+				<canvas id="granim-canvas" width={WIDTH} height={HEIGHT}></canvas>
+				<canvas ref={el => this.canvas = el} width={WIDTH} height={HEIGHT}></canvas>
 			</main>
 		)
 	}
 }
 
+				// <MovingImage ref={el => this.image = el} image={this.donutImage} positionX={this.state.positionX}/>
 export default connect(App.mapStateToProps)(App)

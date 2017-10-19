@@ -28,9 +28,13 @@ export default class MovingImage extends Component{
 
 	}
 
+	reset() {
+		
+	}
+
 	getStyle() {
 		return {
-			left: this.props.positionX
+			// left: this.props.positionX
 		}
 	}
 
